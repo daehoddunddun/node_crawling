@@ -11,9 +11,23 @@ app.use(cors());
 
 app.get("/crawling", async (req, res) => {
   let reqList = req.query;
-  const { potal, date, length } = reqList;
-  await crawling(potal, date, length);
+  let dataJson = JSON.parse(reqList.testData);
+  let {
+    crawling_channel_type,
+    crawling_keywords,
+    crawling_period_type,
+    crawling_limit,
+  } = dataJson;
+
+  await crawling(
+    crawling_channel_type,
+    crawling_keywords,
+    crawling_period_type,
+    crawling_limit
+  );
+
   res.send(crawlingData);
+  crawlingData = []; //api 데이터 전송 후 배열 초기화
 });
 
 app.listen(port, () => {
@@ -21,9 +35,8 @@ app.listen(port, () => {
 });
 
 /* [crawling] */
-const crawlingData = []; // 크롤링 데이터를 받은 Array
-
-let crawling = async (potal, date, length) => {
+let crawlingData = []; // 크롤링 데이터를 받은 Array
+let crawling = async (potal, crawling_keywords, date, length) => {
   const browser = await puppeteer.launch({
     headless: false,
     args: ["--window-size=1920,1080"],
@@ -39,19 +52,19 @@ let crawling = async (potal, date, length) => {
   switch (potal) {
     case "naver":
       await page.goto(
-        "https://search.naver.com/search.naver?where=image&sm=tab_jum&query=강아지"
+        `https://search.naver.com/search.naver?where=image&sm=tab_jum&query=${crawling_keywords[0]}`
       ); //수집채널1-Naver 키워드 검색창으로 이동
       await page.waitForSelector("._listImage"); // * 스크랩하려는 태그가 랜더링 완료되기 전까지 기다린다.
       break;
     case "daum":
       await page.goto(
-        "https://search.daum.net/search?w=img&nil_search=btn&DA=NTB&enc=utf8&q=%EA%B0%95%EC%95%84%EC%A7%80"
+        `https://search.daum.net/search?w=img&nil_search=btn&DA=NTB&enc=utf8&q=${crawling_keywords[0]}`
       ); //수집채널2-Daum = 키워드 검색창으로 이동
       await page.waitForSelector(".thumb_img");
       break;
     case "google":
       await page.goto(
-        "https://www.google.com/search?q=%EA%B0%95%EC%95%84%EC%A7%80&source=lnms&tbm=isch"
+        `https://www.google.com/search?q=${crawling_keywords[0]}&source=lnms&tbm=isch`
       ); //수집채널3-Google 키워드 검색창으로 이동
       await page.waitForSelector(".rg_i.Q4LuWd");
       break;
@@ -134,7 +147,7 @@ let crawling = async (potal, date, length) => {
     crawlingData.length = 100;
   } //요청 데이터의 length
 
-  /* 지워도 되는 내용 */
+  /* 부가기능 */
   // await page.click("._listImage"); //부가 기능 - 해당 태그를 클릭
   // await page.screenshot({ path: "screen.png" }); // 부가 기능 - 스크린샷 찍기
   // console.dir(crawlingData.length, { maxArrayLength: null }); // 수집한 전체 데이터
