@@ -2,9 +2,11 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs");
+const imageDownloader = require("node-image-downloader");
 
 const app = express();
-const port = 8080;
+const port = 8081;
 
 app.use(cors());
 
@@ -29,7 +31,7 @@ app.get("/crawling", async (req, res) => {
       res.send(crawlingData);
     }
   } catch (err) {
-    console.log("Error");
+    console.log(err);
     res.send("crawling_error");
   }
 
@@ -38,6 +40,7 @@ app.get("/crawling", async (req, res) => {
 
 /* [crawling] */
 let crawlingData = []; // 크롤링 데이터를 받은 Array
+
 let crawling = async (potal, crawling_keywords, date, length) => {
   console.log("포탈", potal);
 
@@ -89,8 +92,6 @@ let crawling = async (potal, crawling_keywords, date, length) => {
       break;
   }
 
-  await autoScroll(page); // 자동 스크롤 시작(스크롤 시 태그 생성 때문에 추가한 내용)
-
   async function autoScroll(page) {
     await page.evaluate(async () => {
       await new Promise((resolve, reject) => {
@@ -105,10 +106,12 @@ let crawling = async (potal, crawling_keywords, date, length) => {
             clearInterval(timer);
             resolve();
           }
-        }, 200); // distance로 스크롤 내리는 속도를 조절함(100 빠르지만 데이터를 전부 수집 못하는 에러로 length 100정도까지만/ 200권장 / 300 느림)
+        }, 100); // distance로 스크롤 내리는 속도를 조절함(100 빠르지만 데이터를 전부 수집 못하는 에러로 length 100정도까지만/ 200권장 / 300 느림)
       });
     });
   }
+
+  await autoScroll(page); // 자동 스크롤 시작(스크롤 시 태그 생성 때문에 추가한 내용)
 
   const content = await page.content(); // * 페이지 컨텐츠 생성한다.
 
@@ -120,14 +123,18 @@ let crawling = async (potal, crawling_keywords, date, length) => {
       const naverLists = $(
         "._contentRoot > .photo_group._listGrid > .photo_tile._grid > div > div > .thumb > a "
       );
-
       naverLists.each((idx, list) => {
-        const src =
+        const linkfilter =
           $(list).find("img").attr("data-lazy-src") === undefined
             ? $(list).find("img").attr("src")
             : $(list).find("img").attr("data-lazy-src");
+        // 네이버 이미지의 src 가 data-lazy-src 를 참조하는 내용도 있어서 삼항연산자로 통일
+
+        const typeilter = linkfilter.replace(/\jpg&type=.*/i, ".jpg");
+        const src = typeilter.replace(/\png&type=.*/i, ".jpg");
         crawlingData.push({ idx, src });
-      }); // 네이버 이미지의 src 가 data-lazy-src 를 참조하는 내용도 있어서 삼항연산자로 통일
+      });
+
       break;
 
     case "daum":
@@ -149,7 +156,11 @@ let crawling = async (potal, crawling_keywords, date, length) => {
 
       googleLists.each((idx, list) => {
         const src = $(list).find("img").attr("src");
-        crawlingData.push({ idx, src });
+        if (src.includes("data:image/jpeg;base64")) {
+          console.log(`idx : ${idx}번 데이터는 base64로 인코딩`);
+        } else {
+          crawlingData.push({ idx, src });
+        }
       });
       break;
 
@@ -159,11 +170,30 @@ let crawling = async (potal, crawling_keywords, date, length) => {
 
   if (crawlingData.length >= length) {
     crawlingData.length = length;
-  } //요청 데이터의 length
+  }
 
-  /* 부가기능 */
-  // await page.click("._listImage"); //부가 기능 - 해당 태그를 클릭
-  // await page.screenshot({ path: "screen.png" }); // 부가 기능 - 스크린샷 찍기
-  // console.dir(crawlingData.length, { maxArrayLength: null }); // 수집한 전체 데이터
+  /* [imgDownload] */
+  let imgList = [];
+
+  crawlingData.map((x) => {
+    let y = {};
+    y["uri"] = x["src"];
+    y.filename = crawling_keywords + `_${potal}_FILE_` + x.idx;
+    imgList.push(y);
+  }); //imageDownloader 양식에 맞춘 객체데이터 가공 {url : val, filename : vlaue}
+
+  imageDownloader({
+    imgs: imgList,
+    dest: "./imgDirectory", //destination folder
+  })
+    .then((info) => {
+      console.log("all done ✅", info.length);
+      //console = info
+    })
+    .catch((error, response, body) => {
+      console.log("something goes bad! ❌");
+      console.log(error);
+    });
+
   await browser.close(); // 브라우저 종료
 };

@@ -36,32 +36,35 @@
 
 3. 12/08 스크롤 시 생성되는 이미지를 크롤링 하기 위해 autoScroll 적용
 
- - 초기 데이터 추출 시 너무 적은 양의 데이터가 추출되는 내용을 확인
- - 확인결과 scoll 시 추가 img 태그의 생성을 발견했고, autoScroll 기능을 통해 크롤링 이전 img 태그 전체 생성
- 
+- 초기 데이터 추출 시 너무 적은 양의 데이터가 추출되는 내용을 확인
+- 확인결과 scoll 시 추가 img 태그의 생성을 발견했고, autoScroll 기능을 통해 크롤링 이전 img 태그 전체 생성
+
 ![오토스크롤](https://user-images.githubusercontent.com/98578138/206399552-415046d1-367c-4f01-96c6-acf0fa565425.png)
 
 4. 12/08 추출 데이터 가공
 
- - 데이터 추출 시 src의 url 링크를 참조하는데 네이버 이미지는 src/data-lazy-src 두개로 관리하고 있는 내용을 확인
- - find 메서드를 통해 일치하지 않은 경우 같은 url 형식을 받을 수 있게 가공
- - 클라이언트의 요청 갯수만큼 데이터를 보내기 위해 if문을 통하여 length를 제한하였고, 해당 데이터를 배열로 push
- 
- ![src부분 데이터와 크롤링 갯수 제한](https://user-images.githubusercontent.com/98578138/206400899-90c24af4-ec8a-4f8b-a339-a7d9f74bfaf2.png)
- 
+- 데이터 추출 시 src의 url 링크를 참조하는데 네이버 이미지는 src/data-lazy-src 두개로 관리하고 있는 내용을 확인
+- find 메서드를 통해 일치하지 않은 경우 같은 url 형식을 받을 수 있게 가공
+- 클라이언트의 요청 갯수만큼 데이터를 보내기 위해 if문을 통하여 length를 제한하였고, 해당 데이터를 배열로 push
+
+![src부분 데이터와 크롤링 갯수 제한](https://user-images.githubusercontent.com/98578138/206400899-90c24af4-ec8a-4f8b-a339-a7d9f74bfaf2.png)
+
 5. 12/12 Switch문을 활용한 potal별 데이터 크롤링 완료
- 
- ![1233213121](https://user-images.githubusercontent.com/98578138/206942927-d4d0fa46-9d86-4b64-ab1e-64f4a4baab60.png)
- 
+
+![1233213121](https://user-images.githubusercontent.com/98578138/206942927-d4d0fa46-9d86-4b64-ab1e-64f4a4baab60.png)
+
 6. 12/08 클라이언트가 요청한 데이터를 보내주기 위하여 api 제공
- 
- - 간단한 express 서버를 통해 테스트 데이터 전송
- - 받은 데이터를 front에서 표출 확인 
- 
- ![api 호출 부분](https://user-images.githubusercontent.com/98578138/206401145-c6272a3c-4128-4f3e-ac4c-66856ddec97e.png)
 
- ![123312321](https://user-images.githubusercontent.com/98578138/206401161-cffbe163-5d06-42f9-8173-ff9b6afff486.png)
+- 간단한 express 서버를 통해 테스트 데이터 전송
+- 받은 데이터를 front에서 표출 확인
 
+![api 호출 부분](https://user-images.githubusercontent.com/98578138/206401145-c6272a3c-4128-4f3e-ac4c-66856ddec97e.png)
 
- 
+![123312321](https://user-images.githubusercontent.com/98578138/206401161-cffbe163-5d06-42f9-8173-ff9b6afff486.png)
 
+//요청사항 데이터 size length 1080/1080
+
+/_ 부가기능 _/
+// await page.click(".\_listImage"); //부가 기능 - 해당 태그를 클릭
+// await page.screenshot({ path: "screen.png" }); // 부가 기능 - 스크린샷 찍기
+// console.dir(crawlingData, { maxArrayLength: null }); // 수집한 전체 데이터
