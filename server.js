@@ -2,7 +2,6 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const express = require("express");
 const cors = require("cors");
-const fs = require("fs");
 const imageDownloader = require("node-image-downloader");
 
 const app = express();
@@ -42,19 +41,6 @@ app.get("/crawling", async (req, res) => {
 let crawlingData = []; // 크롤링 데이터를 받은 Array
 
 let crawling = async (potal, crawling_keywords, date, length) => {
-  console.log("포탈", potal);
-
-  console.log(
-    "1.potal :",
-    potal,
-    "- 2.keyword :",
-    crawling_keywords,
-    "- 3.date :",
-    date,
-    "- length :",
-    length
-  );
-
   const browser = await puppeteer.launch({
     headless: false,
     args: ["--window-size=1920,1080"],
@@ -62,8 +48,8 @@ let crawling = async (potal, crawling_keywords, date, length) => {
 
   const page = await browser.newPage(); // 신규 page 생성
   await page.setViewport({
-    width: 1920,
-    height: 1080,
+    width: 1980,
+    height: 720,
   }); // GUI View 사이즈 지정
 
   switch (potal) {
@@ -91,24 +77,29 @@ let crawling = async (potal, crawling_keywords, date, length) => {
       // ); //수집채널4-Instagram 로그인 시 스크롤 가능한 문제 논의 필요
       break;
   }
-
   async function autoScroll(page) {
-    await page.evaluate(async () => {
+    await page.evaluate(async (length) => {
       await new Promise((resolve, reject) => {
         var totalHeight = 0;
         var distance = 100;
-        var timer = setInterval(() => {
+        var timer = setInterval(async () => {
           var scrollHeight = document.body.scrollHeight;
+          var daumTag = document.querySelectorAll("#imgList > div> a > img");
           window.scrollBy(0, distance);
           totalHeight += distance;
 
-          if (totalHeight >= scrollHeight) {
+          if (totalHeight >= scrollHeight || daumTag.length >= length) {
             clearInterval(timer);
             resolve();
+          } else if (totalHeight >= scrollHeight - 500) {
+            const test = document.querySelector(
+              "#imgColl > div.extend_comp.extend_imgtab > a.expender.open > span"
+            );
+            test.click();
           }
         }, 100); // distance로 스크롤 내리는 속도를 조절함(100 빠르지만 데이터를 전부 수집 못하는 에러로 length 100정도까지만/ 200권장 / 300 느림)
       });
-    });
+    }, length);
   }
 
   await autoScroll(page); // 자동 스크롤 시작(스크롤 시 태그 생성 때문에 추가한 내용)
@@ -142,6 +133,7 @@ let crawling = async (potal, crawling_keywords, date, length) => {
       const daumLists = $(
         ".g_comp > #imgColl > .coll_cont > #imgList > .wrap_thumb > a"
       );
+
       daumLists.each((idx, list) => {
         const src = $(list).find("img").attr("src");
         crawlingData.push({ idx, src });
