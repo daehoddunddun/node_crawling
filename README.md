@@ -83,6 +83,10 @@
 
 - front 표출 테스트
 
+![1212](https://user-images.githubusercontent.com/98578138/209920358-fdf5a9fb-02f5-462a-84c9-38861f323c33.png)
+
+- Moudle 나누기 / potal/키워드/날짜에 따른 directory 구분
+
 ---
 
 ### 부가기능
