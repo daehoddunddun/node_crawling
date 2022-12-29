@@ -87,6 +87,10 @@
 
 - Moudle 나누기 / potal/키워드/날짜에 따른 directory 구분
 
+![21313232](https://user-images.githubusercontent.com/98578138/209920554-993c6ae6-920d-459a-8b87-3e8bf72ca01f.png)
+
+- 성공/실패/에러에 따른 log 표출
+
 ---
 
 ### 부가기능
