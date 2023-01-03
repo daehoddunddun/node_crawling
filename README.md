@@ -1,4 +1,4 @@
-# 😢node_crawling
+# 😀node_crawling
 
 - cheerio 를 통한 웹 크롤링 작업 진행(jQuery Tag selector Parsing).
 - puppeteer - chromium 통해 웹 사이트에 진입 후, 크롤링을 위한 scroll, click 동작 수행.
