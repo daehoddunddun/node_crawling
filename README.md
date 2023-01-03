@@ -14,14 +14,29 @@
 
 #### 진행3 : 크롤링하여 얻은 URL은 api응답으로, 파일은 서버에 내부 저장
 
-#### 진행기간 : 12/06 ~
+#### 진행기간 : 12/06 ~ 12/30
+
+- client reqest
+
+![api2](https://user-images.githubusercontent.com/98578138/209636015-e8700fea-6118-4e77-bc46-920c5b3c2913.png)
+
+- server-crawling
+
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/98578138/209637215-568e0168-bd31-48df-9230-edf7a2f51862.gif)
+
+- save img
+
+![결과값 2](https://user-images.githubusercontent.com/98578138/209639431-131ee147-a53f-4888-ba7d-92e69de17963.png)
+
+- front view
+
+![123312321](https://user-images.githubusercontent.com/98578138/206401161-cffbe163-5d06-42f9-8173-ff9b6afff486.png)
 
 ---
 
 ### 1. api call
 
 ![api](https://user-images.githubusercontent.com/98578138/209635778-f6571030-5dbf-41b3-a983-25c5b36d91f9.png)
-![api2](https://user-images.githubusercontent.com/98578138/209636015-e8700fea-6118-4e77-bc46-920c5b3c2913.png)
 
 - 클라이언트로 요청(키워드,사이트,수량,기간) 에 대한 정보를 받음
 - postman을 통한 모의 테스트 진행(실제 프로젝트에서는 input과 button을 통해 api call 진행 완료하였음)
@@ -33,8 +48,6 @@
 ![포털별 검색 링크](https://user-images.githubusercontent.com/98578138/209637767-fc3fd1f5-af1c-4f78-b239-8e632675b383.png)
 
 ![오토스크롤](https://user-images.githubusercontent.com/98578138/209637971-6f45d435-4435-47bb-a45e-5419b94843ba.png)
-
-![ezgif com-gif-maker](https://user-images.githubusercontent.com/98578138/209637215-568e0168-bd31-48df-9230-edf7a2f51862.gif)
 
 - chromium를 통해 서버 내 가상의 크롬 브라우저를 활성화
 
@@ -66,8 +79,6 @@
 
 ![결과값 1](https://user-images.githubusercontent.com/98578138/209639455-0cbb0ddd-4bc3-4d6b-9dcd-1bddc0ef063f.png)
 
-![결과값 2](https://user-images.githubusercontent.com/98578138/209639431-131ee147-a53f-4888-ba7d-92e69de17963.png)
-
 ![결과값 3](https://user-images.githubusercontent.com/98578138/209639528-71a29392-d1ad-4e56-8844-e3013110db17.png)
 
 ![결과값 4](https://user-images.githubusercontent.com/98578138/209639538-97122b21-ac8e-43fd-92f1-82d47f0bebc5.png)
@@ -78,10 +89,6 @@
 - 브라우저 및 작업 종료
 
 ### 5. 기타
-
-![123312321](https://user-images.githubusercontent.com/98578138/206401161-cffbe163-5d06-42f9-8173-ff9b6afff486.png)
-
-- front 표출 테스트
 
 ![1212](https://user-images.githubusercontent.com/98578138/209920358-fdf5a9fb-02f5-462a-84c9-38861f323c33.png)
 
@@ -100,7 +107,3 @@
 //await page.screenshot({ path: "screen.png" }); // 부가 기능 - 스크린샷 찍기
 
 //console.dir(crawlingData, { maxArrayLength: null }); // 수집한 전체 데이터
-
-### 추가 요청사항
-
-//size length 1080/1080
